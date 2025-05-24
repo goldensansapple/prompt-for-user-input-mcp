@@ -47,13 +47,14 @@ def format_log_parameter(
     return param
 
 
-def prompt_via_vscode_extension(prompt: str, title: str) -> str:
+def prompt_via_vscode_extension(prompt: str, title: str, timeout: int = 3600) -> str:
     """
     Prompt user via VSCode extension API.
 
     Args:
         prompt: The message/question to show to the user
         title: Optional title for the prompt dialog
+        timeout: Timeout in seconds for waiting for user response
 
     Returns:
         The user's response as a string
@@ -74,7 +75,7 @@ def prompt_via_vscode_extension(prompt: str, title: str) -> str:
         response = requests.post(
             f"{VSCODE_EXTENSION_URL}/prompt",
             json=prompt_data,
-            timeout=3600,  # 1 hour timeout
+            timeout=timeout,
         )
 
         if response.status_code == 200:
@@ -99,7 +100,7 @@ def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
         description="MCP Server for User Input Prompts",
-        usage="py mcp_server.py [--host <host>] [--port <port>]",
+        usage="py mcp_server.py [--host <host>] [--port <port>] [--timeout <seconds>]",
     )
 
     parser.add_argument(
@@ -115,6 +116,14 @@ def parse_arguments():
         type=int,
         default=8000,
         help="Port to run the MCP server on (default: 8000)",
+    )
+
+    parser.add_argument(
+        "--timeout",
+        "-t",
+        type=int,
+        default=3600,
+        help="Timeout in seconds for user input prompts (default: 3600)",
     )
 
     parser.add_argument(
@@ -134,6 +143,7 @@ if __name__ == "__main__":
     logger.info("Starting MCP server for user input prompts...")
     logger.info(f"Host: {args.host}")
     logger.info(f"Port: {args.port}")
+    logger.info(f"Timeout: {args.timeout} seconds")
 
     mcp = FastMCP(
         "prompt-for-user-input-mcp",
@@ -162,7 +172,7 @@ if __name__ == "__main__":
             logger.info(
                 f"Attempting VSCode extension prompt: {format_log_parameter(title, need_apply_ellipsis=False)}..."
             )
-            return prompt_via_vscode_extension(prompt, title)
+            return prompt_via_vscode_extension(prompt, title, args.timeout)
 
         except Exception as e:
             logger.warning(f"VSCode extension unavailable: {str(e)}")

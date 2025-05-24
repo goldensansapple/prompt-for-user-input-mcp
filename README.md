@@ -63,7 +63,7 @@ vsce package
 ### 4. Start the MCP Server
 
 ```cmd
-# Default: Run on 127.0.0.1:8000
+# Default: Run on 127.0.0.1:8000 with 1-hour timeout
 py mcp_server.py
 
 # Custom port: Run on a different port
@@ -71,6 +71,9 @@ py mcp_server.py --port 9000
 
 # Custom host and port
 py mcp_server.py --host 0.0.0.0 --port 3000
+
+# Custom timeout (e.g., 10 minutes = 600 seconds)
+py mcp_server.py --timeout 600
 ```
 
 The server will start on `http://127.0.0.1:8000/prompt-for-user-input-mcp` by default.
@@ -142,6 +145,7 @@ This opens a professional webview panel in VSCode/Cursor with:
 |--------|-------|-------------|---------|
 | `--port` | `-p` | Port to run the server on | `8000` |
 | `--host` |  | Host to bind the server to | `127.0.0.1` |
+| `--timeout` | `-t` | Timeout in seconds for user input prompts | `3600` |
 | `--version` | `-v` | Show version information | |
 | `--help` | `-h` | Show help message | |
 
@@ -157,6 +161,13 @@ py mcp_server.py -p 9000
 
 # Run on all interfaces, port 3000
 py mcp_server.py --host 0.0.0.0 --port 3000
+
+# Set a custom timeout (10 minutes)
+py mcp_server.py --timeout 600
+py mcp_server.py -t 600
+
+# Combine options
+py mcp_server.py --port 9000 --timeout 1800 --host 0.0.0.0
 
 # Show version and help
 py mcp_server.py --version
