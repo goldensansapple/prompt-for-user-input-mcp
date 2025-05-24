@@ -26,7 +26,3 @@ Thumbs.db
 
 # Logs
 *.log
-
-# MCP specific
-*.mcp
-.mcp/

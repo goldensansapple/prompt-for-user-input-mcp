@@ -6,14 +6,11 @@ build-backend = "setuptools.build_meta"
 name = "prompt-user-input-mcp"
 version = "0.1.0"
 description = "MCP server that allows models to prompt users for input"
-authors = [{name = "User", email = "user@example.com"}]
-license = {text = "MIT"}
+authors = [{ name = "Jesse Gomez", email = "59100457+goldensansapple@users.noreply.github.com" }]
+license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.8"
-dependencies = [
-    "mcp>=1.0.0",
-    "pydantic>=2.0.0",
-]
+dependencies = ["mcp>=1.0.0", "pydantic>=2.0.0"]
 
 [project.scripts]
-prompt-user-input-mcp = "prompt_user_input_mcp.server:main" 
+prompt-user-input-mcp = "mcp_server.py:main"

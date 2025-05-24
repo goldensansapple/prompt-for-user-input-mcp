@@ -1,15 +1,8 @@
 import * as vscode from "vscode";
-import express, { Request, Response } from "express";
+import express from "express";
 import { Server } from "http";
 
 let server: Server | undefined;
-let pendingPrompts = new Map<
-  string,
-  {
-    resolve: (value: string) => void;
-    reject: (reason?: any) => void;
-  }
->();
 
 export function activate(context: vscode.ExtensionContext) {
   console.log("Prompt For User Input MCP extension is now active!");
@@ -41,28 +34,30 @@ function startLocalServer() {
   app.use(express.json());
 
   // Endpoint for receiving prompt requests from MCP server
-  app.post("/prompt", async (req: Request, res: Response) => {
-    try {
-      const { id, title = "User Input Required", prompt } = req.body;
+  app.post("/prompt", (req: express.Request, res: express.Response) => {
+    (async () => {
+      try {
+        const { id, title = "User Input Required", prompt } = req.body;
 
-      if (!id || !prompt) {
-        return res
-          .status(400)
-          .json({ error: "Missing required fields: id, prompt" });
+        if (!id || !prompt) {
+          return res
+            .status(400)
+            .json({ error: "Missing required fields: id, prompt" });
+        }
+
+        // Show the input dialog in VSCode
+        const response = await showInputDialog(title, prompt);
+
+        res.json({ response });
+      } catch (error) {
+        console.error("Error handling prompt request:", error);
+        res.status(500).json({ error: "Internal server error" });
       }
-
-      // Show the input dialog in VSCode
-      const response = await showInputDialog(title, prompt);
-
-      res.json({ response });
-    } catch (error) {
-      console.error("Error handling prompt request:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
+    })();
   });
 
   // Health check endpoint
-  app.get("/health", (req: Request, res: Response) => {
+  app.get("/health", (_req: express.Request, res: express.Response) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
@@ -113,19 +108,30 @@ async function showInputDialog(title: string, prompt: string): Promise<string> {
   });
 }
 
+// HTML escaping function to prevent XSS attacks
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function getWebviewContent(title: string, prompt: string): string {
   const templates = new VSCodeWebviewTemplates();
+  const escapedTitle = escapeHtml(title);
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title}</title>
+  <title>${escapedTitle}</title>
   <style>${templates.getStyles()}</style>
 </head>
 <body>
-  ${templates.getBodyContent(title, prompt)}
+  ${templates.getBodyContent(escapedTitle, escapeHtml(prompt))}
   <script>${templates.getScript()}</script>
 </body>
 </html>`;
@@ -351,7 +357,7 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         <div class="input-section">
           <label class="input-label" for="responseInput">Your Response:</label>
           <textarea id="responseInput" placeholder="Enter your response here..."></textarea>
-          <div class="tip">💡 Tip: You can select and copy any text from the question above.</div>
+          <div class="tip">Tip: You can select and copy any text from the question above.</div>
         </div>
         
         <div class="button-container">

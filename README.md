@@ -1,17 +1,14 @@
 # Prompt User Input MCP Server
 
-An MCP (Model Context Protocol) server that allows AI models to prompt users for input during conversations. This server uses **Server-Sent Events (SSE)** transport for seamless integration with Cursor and other MCP-compatible clients.
+An MCP (Model Context Protocol) server that allows AI models to prompt users for input during conversations. This server uses **Streamable HTTP** transport for seamless integration with Cursor and other MCP-compatible clients.
 
 ## Features
 
 - **Single Tool**: Exposes `prompt_for_user_input` tool for models to use
-- **SSE Transport**: Uses Server-Sent Events for reliable client-server communication
-- **Windows Console Popup**: Opens a separate console window for user input on Windows
-- **Flexible Prompting**: Supports custom prompts with optional titles
-- **Seamless Integration**: Works with Cursor and other MCP-compatible clients
-- **Interactive Workflow**: Enables back-and-forth communication between AI and user
+- **Streamable HTTP Transport**: Uses streamable HTTP for reliable client-server communication
+- **VS Code Extension**: Attempts to use VS Code extension
 
-## Quick Installation (Windows)
+## Install
 
 ### Prerequisites
 
@@ -27,19 +24,58 @@ py -m pip install "mcp[cli]"
 ### Step 2: Start the Server
 
 ```cmd
+# Default: Run on 127.0.0.1:8000
 py mcp_server.py
+
+# Custom port: Run on a different port
+py mcp_server.py --port 9000
+
+# Custom host and port
+py mcp_server.py --host 0.0.0.0 --port 3000
+
+# Show version
+py mcp_server.py --version
+
+# Get help
+py mcp_server.py --help
 ```
 
-The server will start on `http://localhost:8000/sse`
+The server will start on `http://127.0.0.1:8000/prompt-for-user-input-mcp` by default
+
+## Command Line Options
+
+| Option | Short | Description | Default |
+|--------|-------|-------------|---------|
+| `--port` | `-p` | Port to run the server on | `8000` |
+| `--host` |  | Host to bind the server to | `127.0.0.1` |
+| `--version` |  | Show version information | |
+| `--help` | `-h` | Show help message | |
+
+### Examples
+
+```cmd
+# Run on default port 8000
+py mcp_server.py
+
+# Run on port 9000
+py mcp_server.py --port 9000
+py mcp_server.py -p 9000
+
+# Run on all interfaces, port 3000
+py mcp_server.py --host 0.0.0.0 --port 3000
+
+# Show version
+py mcp_server.py --version
+```
 
 ## Configuration for Cursor
 
 ### Method 1: Via Cursor Settings UI
 
-1. **Open Cursor Settings** → Go to **Settings** → **Extensions** → **MCP Servers**
+1. **Open Cursor Settings** → Go to **Settings** → **Features** → **MCP Servers**
 2. **Add Server Configuration** with these settings:
    - **Name**: `prompt-for-user-input-mcp`
-   - **URL**: `http://localhost:8000/sse`
+   - **URL**: `http://127.0.0.1:8000/prompt-for-user-input-mcp` (or your custom host:port)
 
 ### Method 2: Configuration File
 
@@ -49,7 +85,7 @@ Copy the contents of `cursor-mcp-config.json` to your Cursor MCP configuration:
 {
   "mcpServers": {
     "prompt-for-user-input-mcp": {
-      "url": "http://localhost:8000/sse"
+      "url": "http://127.0.0.1:8000/prompt-for-user-input-mcp"
     }
   }
 }
@@ -102,8 +138,8 @@ Please enter your response:
 
 ## Files Overview
 
-- **`mcp_server.py`**: FastMCP-based SSE server (main implementation)
-- **`cursor-mcp-config.json`**: Cursor configuration for SSE connection
+- **`mcp_server.py`**: FastMCP-based Streamable HTTP server (main implementation)
+- **`cursor-mcp-config.json`**: Cursor configuration for Streamable HTTP connection
 - **`README.md`**: This documentation
 
 ## Testing the Server
@@ -114,25 +150,24 @@ Please enter your response:
 py mcp_server.py
 ```
 
-This will start the SSE server on `http://localhost:8000/sse`. You can test the endpoint:
+This will start the Streamable HTTP server on `http://127.0.0.1:8000/prompt-for-user-input-mcp`. You can test the endpoint:
 
 ```cmd
-curl -i http://localhost:8000/sse
+curl -i http://127.0.0.1:8000/prompt-for-user-input-mcp
 ```
 
 You should see:
 
 - `HTTP/1.1 200 OK`
-- `Content-Type: text/event-stream`
-- Event stream data
+- Proper MCP server response
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **"Tool input_user_prompt not found"**:
+1. **"Tool prompt_for_user_input not found"**:
    - Ensure the MCP server is running: `py mcp_server.py`
-   - Check that `http://localhost:8000/sse` is accessible
+   - Check that `http://127.0.0.1:8000/prompt-for-user-input-mcp` is accessible
    - Restart Cursor after updating configuration
 
 2. **"Server not connecting"**:
@@ -146,29 +181,30 @@ You should see:
 
 ### Debug Tips
 
-- Check if server is running: `curl http://localhost:8000/sse`
+- Check if server is running: `curl http://127.0.0.1:8000/prompt-for-user-input-mcp`
 - Check Cursor's developer console for MCP-related messages
 - Verify your system prompt includes the `prompt_for_user_input` instruction
 
 ## How It Works
 
-1. **Server Startup**: FastMCP server starts with SSE transport on port 8000
-2. **Client Connection**: Cursor connects to `http://localhost:8000/sse`
+1. **Server Startup**: FastMCP server starts with Streamable HTTP transport on port 8000
+2. **Client Connection**: Cursor connects to `http://127.0.0.1:8000/prompt-for-user-input-mcp`
 3. **Tool Call**: When the AI model needs user input, it calls `prompt_for_user_input`
-4. **User Prompt**: On Windows, a new console window opens for input
+4. **User Prompt**: On Windows, a new console window opens for input (or VS Code extension if available)
 5. **Response Collection**: User types response, which is captured and returned
 6. **Model Continues**: The model uses the user's response to continue the conversation
 
 ## Platform Compatibility
 
-- ✅ **Windows**: Full support with console popup dialogs
-- ❌ **Linux/macOS**: Not yet implemented (contributions welcome!)
+- **Windows**: Full support with console popup dialogs
+- **Linux/macOS**: Not yet implemented (contributions welcome!)
 
 ## Architecture
 
 This implementation uses:
 
 - **FastMCP**: High-level MCP server framework
-- **SSE Transport**: Server-Sent Events for web-based communication
+- **Streamable HTTP Transport**: HTTP-based communication for web integration
 - **Subprocess**: Separate console windows for user input on Windows
 - **Temporary Files**: For passing data between processes
+- **VS Code Extension**: Primary method for user input (with console fallback)

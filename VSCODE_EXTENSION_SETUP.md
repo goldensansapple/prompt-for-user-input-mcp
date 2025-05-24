@@ -6,11 +6,11 @@ This guide shows how to set up native in-editor input dialogs for the MCP user p
 
 Instead of popup console windows, this approach provides:
 
-- ✅ Native VSCode input boxes
-- ✅ Stays within the editor
-- ✅ Better UX integration
-- ✅ Graceful fallback to console
-- ✅ Works in both Cursor and VSCode
+- Native VSCode input boxes
+- Stays within the editor
+- Better UX integration
+- Graceful fallback to console
+- Works in both Cursor and VSCode
 
 ## Architecture
 
@@ -187,89 +187,4 @@ To add more sophisticated input options:
 
 1. **Multi-line Input**:
 
-```typescript
-const result = await vscode.window.showInputBox({
-    title: title,
-    prompt: prompt,
-    placeHolder: 'Enter your response...',
-    ignoreFocusOut: true,
-    // Add these for multi-line:
-    validateInput: (text) => {
-        // Custom validation
-        return null; // or error message
-    }
-});
 ```
-
-2. **Quick Pick (Dropdown)**:
-
-```typescript
-const items = ['Option 1', 'Option 2', 'Option 3'];
-const result = await vscode.window.showQuickPick(items, {
-    title: title,
-    placeHolder: prompt
-});
-```
-
-3. **Custom Webview**:
-For complex forms, create a webview panel with HTML/CSS/JS.
-
-### Publishing the Extension
-
-To publish to VSCode Marketplace:
-
-1. Create publisher account at <https://marketplace.visualstudio.com>
-2. Get Personal Access Token
-3. Package and publish:
-
-```bash
-vsce package
-vsce publish
-```
-
-## Alternative Approaches
-
-### Option 1: Command Palette Integration
-
-Instead of HTTP server, use VSCode commands:
-
-```typescript
-vscode.commands.registerCommand('extension.promptUser', async (prompt, title) => {
-    return await vscode.window.showInputBox({title, prompt});
-});
-```
-
-### Option 2: Notification-Based
-
-Use VSCode notifications for non-blocking prompts:
-
-```typescript
-const action = await vscode.window.showInformationMessage(
-    prompt, 
-    { modal: true }, 
-    'Respond'
-);
-```
-
-### Option 3: Webview Panel
-
-Create a dedicated panel for more complex interactions:
-
-```typescript
-const panel = vscode.window.createWebviewPanel(
-    'userInput',
-    title,
-    vscode.ViewColumn.Beside,
-    { enableScripts: true }
-);
-```
-
-## Next Steps
-
-1. **Try the basic setup** with the provided extension
-2. **Test the flow** with a simple MCP tool call
-3. **Customize the UI** based on your needs
-4. **Extend functionality** with additional input types
-5. **Consider publishing** if it works well for your team
-
-This approach gives you the best of both worlds: native editor integration when available, with reliable console fallback for all scenarios.
