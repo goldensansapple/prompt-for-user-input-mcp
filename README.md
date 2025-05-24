@@ -14,7 +14,7 @@ An MCP (Model Context Protocol) server that allows AI models to prompt users for
 
 ## Recent Improvements
 
-### Version 1.1.0 (Latest)
+### Version 1.0.0 (Latest)
 
 - ✅ **Flexbox Layout**: Modern CSS architecture replacing margin-based positioning
 - ✅ **State Persistence**: Text input preserved when webview loses/regains focus
@@ -250,7 +250,7 @@ Expected response:
 - Check VSCode Developer Console (Help > Toggle Developer Tools)
 - Ensure extension compiled successfully: `npm run compile`
 
-#### State not persisting" or Input lost on focus change
+#### State not persisting or Input lost on focus change
 
 - Check browser console for JavaScript errors
 - Verify extension is using latest version with state persistence
@@ -312,8 +312,7 @@ All platforms work through the VSCode extension interface with identical functio
 
 ## Version History
 
-- **v1.1.0**: Flexbox layout, state persistence, enhanced error handling
-- **v1.0.0**: Initial release with basic functionality
+- **v1.0.0**: Initial release with flexbox layout, state persistence, enhanced error handling, improved UX, and security features
 
 ## License
 

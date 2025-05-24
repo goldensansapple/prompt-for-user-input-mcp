@@ -12,7 +12,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="prompt-for-user-input-mcp",
-    version="0.1.0",
+    version="1.0.0",
     author="Jesse Gomez",
     description="MCP server that allows models to prompt users for help, clarification, and other information",
     long_description=long_description,

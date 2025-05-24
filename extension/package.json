@@ -2,7 +2,7 @@
   "name": "prompt-for-user-input-mcp",
   "displayName": "Prompt For User Input MCP",
   "description": "Native input dialogs for MCP user prompts",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "publisher": "prompt-for-user-input-mcp",
   "license": "MIT",
   "repository": {

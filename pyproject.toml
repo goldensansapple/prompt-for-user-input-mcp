@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "prompt-user-input-mcp"
-version = "0.1.0"
+version = "1.0.0"
 description = "MCP server that allows models to prompt users for input"
 authors = [{ name = "Jesse Gomez", email = "jesse.gomez201@gmail.com" }]
 license = { text = "MIT" }
