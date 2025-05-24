@@ -22,6 +22,31 @@ logger = logging.getLogger(__name__)
 VSCODE_EXTENSION_URL = "http://localhost:3001"
 
 
+def format_log_parameter(
+    param: str,
+    need_apply_ellipsis: bool = True,
+    max_length: int = 50,
+) -> str:
+    """
+    Format individual parameters in log messages with appropriate truncation.
+
+    Args:
+        param: The parameter value to format
+        max_length: Maximum length before truncation
+
+    Returns:
+        Formatted parameter with appropriate truncation
+    """
+
+    # Regular parameters: truncate if too long
+    if len(param) > max_length and need_apply_ellipsis:
+        return param[: max_length - 3] + "..."
+    elif len(param) > max_length:
+        return param[:max_length]
+
+    return param
+
+
 def prompt_via_vscode_extension(prompt: str, title: str) -> str:
     """
     Prompt user via VSCode extension API.
@@ -35,18 +60,17 @@ def prompt_via_vscode_extension(prompt: str, title: str) -> str:
     """
     try:
         logger.info(
-            f"Checking VSCode extension health at {VSCODE_EXTENSION_URL}/health"
+            f"Checking VSCode extension health at {VSCODE_EXTENSION_URL}/health..."
         )
         health_response = requests.get(f"{VSCODE_EXTENSION_URL}/health", timeout=2)
         if health_response.status_code != 200:
-            logger.error(
-                f"VSCode extension health check failed: {health_response.status_code}"
-            )
             raise Exception("Extension health check failed")
 
         prompt_data = {"id": str(uuid.uuid4()), "title": title, "prompt": prompt}
 
-        logger.info(f"Sending prompt to VSCode extension: {prompt_data}")
+        logger.info(
+            f"Sending prompt to VSCode extension: {format_log_parameter(prompt_data['title'], need_apply_ellipsis=False)}..."
+        )
         response = requests.post(
             f"{VSCODE_EXTENSION_URL}/prompt",
             json=prompt_data,
@@ -56,7 +80,9 @@ def prompt_via_vscode_extension(prompt: str, title: str) -> str:
         if response.status_code == 200:
             result = response.json().get("response")
             if result:
-                logger.info(f"Received response from VSCode extension: {result}")
+                logger.info(
+                    f"Received response from VSCode extension: {format_log_parameter(result)}"
+                )
                 return result
             else:
                 raise Exception("No response from extension")
@@ -105,7 +131,7 @@ def parse_arguments():
 if __name__ == "__main__":
     args = parse_arguments()
 
-    logger.info(f"Starting MCP server for user input prompts")
+    logger.info("Starting MCP server for user input prompts...")
     logger.info(f"Host: {args.host}")
     logger.info(f"Port: {args.port}")
 
@@ -133,11 +159,13 @@ if __name__ == "__main__":
             The user's response as a string
         """
         try:
-            logger.info(f"Attempting VSCode extension prompt: {title[:50]}...")
+            logger.info(
+                f"Attempting VSCode extension prompt: {format_log_parameter(title, need_apply_ellipsis=False)}..."
+            )
             return prompt_via_vscode_extension(prompt, title)
 
         except Exception as e:
-            logger.warning(f"VSCode extension unavailable: {e}")
+            logger.warning(f"VSCode extension unavailable: {str(e)}")
             return f"[Error getting user input: {str(e)}]"
 
     try:
@@ -153,11 +181,11 @@ if __name__ == "__main__":
             logger.error(f"Port {args.port} is already in use.")
             sys.exit(1)
         else:
-            logger.error(f"Unexpected error: {e}")
+            logger.error(f"Unexpected error: {str(e)}")
             sys.exit(1)
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
         sys.exit(0)
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
+        logger.error(f"Unexpected error: {str(e)}")
         sys.exit(1)
