@@ -331,7 +331,6 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         color: var(--vscode-foreground);
         background-color: var(--vscode-editor-background);
         padding: 20px;
-        margin: 0;
         display: flex;
         justify-content: center;
         min-height: 100vh;
