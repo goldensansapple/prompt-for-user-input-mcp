@@ -12,7 +12,9 @@ import argparse
 from mcp.server.fastmcp import FastMCP
 
 # Set up logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -32,12 +34,19 @@ def prompt_via_vscode_extension(prompt: str, title: str) -> str:
         The user's response as a string
     """
     try:
+        logger.info(
+            f"Checking VSCode extension health at {VSCODE_EXTENSION_URL}/health"
+        )
         health_response = requests.get(f"{VSCODE_EXTENSION_URL}/health", timeout=2)
         if health_response.status_code != 200:
+            logger.error(
+                f"VSCode extension health check failed: {health_response.status_code}"
+            )
             raise Exception("Extension health check failed")
 
         prompt_data = {"id": str(uuid.uuid4()), "title": title, "prompt": prompt}
 
+        logger.info(f"Sending prompt to VSCode extension: {prompt_data}")
         response = requests.post(
             f"{VSCODE_EXTENSION_URL}/prompt",
             json=prompt_data,
@@ -45,8 +54,12 @@ def prompt_via_vscode_extension(prompt: str, title: str) -> str:
         )
 
         if response.status_code == 200:
-            result = response.json()
-            return result.get("response", "[Error: No response from extension]")
+            result = response.json().get("response")
+            if result:
+                logger.info(f"Received response from VSCode extension: {result}")
+                return result
+            else:
+                raise Exception("No response from extension")
         else:
             raise Exception(f"Request failed with status {response.status_code}")
 
@@ -60,15 +73,7 @@ def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
         description="MCP Server for User Input Prompts",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  py mcp_server.py                          # Run on default port 8000
-  py mcp_server.py --port 9000              # Run on port 9000
-  py mcp_server.py -p 3000                  # Run on port 3000
-  py mcp_server.py --host 0.0.0.0           # Run on all interfaces
-  py mcp_server.py --host 0.0.0.0 -p 3000   # Run on all interfaces on port 3000
-""",
+        usage="py mcp_server.py [--host <host>] [--port <port>]",
     )
 
     parser.add_argument(
@@ -145,13 +150,10 @@ if __name__ == "__main__":
         )
     except OSError as e:
         if "Address already in use" in str(e):
-            logger.error(
-                f"Port {args.port} is already in use. Try a different port with --port <number>"
-            )
-            logger.error(f"Example: python mcp_server.py --port {args.port + 1}")
+            logger.error(f"Port {args.port} is already in use.")
             sys.exit(1)
         else:
-            logger.error(f"Failed to start server: {e}")
+            logger.error(f"Unexpected error: {e}")
             sys.exit(1)
     except KeyboardInterrupt:
         logger.info("Server stopped by user")

@@ -147,6 +147,184 @@ interface WebviewTemplates {
 class VSCodeWebviewTemplates implements WebviewTemplates {
   getStyles(): string {
     return `
+      /* Tailwind CSS Preflight Reset - 2025 v4.1 */
+      *, ::before, ::after, ::backdrop, ::file-selector-button {
+        box-sizing: border-box;
+        border: 0 solid;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        line-height: 1.5;
+        -webkit-text-size-adjust: 100%;
+        -moz-tab-size: 4;
+        tab-size: 4;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      }
+
+      body {
+        line-height: inherit;
+      }
+
+      hr {
+        height: 0;
+        color: inherit;
+        border-top-width: 1px;
+      }
+
+      abbr:where([title]) {
+        text-decoration: underline dotted;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-size: inherit;
+        font-weight: inherit;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: inherit;
+      }
+
+      b, strong {
+        font-weight: bolder;
+      }
+
+      code, kbd, samp, pre {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 1em;
+      }
+
+      small {
+        font-size: 80%;
+      }
+
+      sub, sup {
+        font-size: 75%;
+        line-height: 0;
+        position: relative;
+        vertical-align: baseline;
+      }
+
+      sub {
+        bottom: -0.25em;
+      }
+
+      sup {
+        top: -0.5em;
+      }
+
+      table {
+        text-indent: 0;
+        border-color: inherit;
+        border-collapse: collapse;
+      }
+
+      button, input, optgroup, select, textarea {
+        font-family: inherit;
+        font-size: 100%;
+        font-weight: inherit;
+        line-height: inherit;
+        color: inherit;
+        margin: 0;
+        padding: 0;
+      }
+
+      button, select {
+        text-transform: none;
+      }
+
+      button, [type="button"], [type="reset"], [type="submit"] {
+        -webkit-appearance: button;
+        background-color: transparent;
+        background-image: none;
+      }
+
+      :-moz-focusring {
+        outline: auto;
+      }
+
+      :-moz-ui-invalid {
+        box-shadow: none;
+      }
+
+      progress {
+        vertical-align: baseline;
+      }
+
+      ::-webkit-inner-spin-button, ::-webkit-outer-spin-button {
+        height: auto;
+      }
+
+      [type="search"] {
+        -webkit-appearance: textfield;
+        outline-offset: -2px;
+      }
+
+      ::-webkit-search-decoration {
+        -webkit-appearance: none;
+      }
+
+      ::-webkit-file-upload-button {
+        -webkit-appearance: button;
+        font: inherit;
+      }
+
+      summary {
+        display: list-item;
+      }
+
+      blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
+        margin: 0;
+      }
+
+      fieldset {
+        margin: 0;
+        padding: 0;
+      }
+
+      legend {
+        padding: 0;
+      }
+
+      ol, ul, menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      input::placeholder, textarea::placeholder {
+        opacity: 1;
+      }
+
+      button, [role="button"] {
+        cursor: pointer;
+      }
+
+      :disabled {
+        cursor: default;
+      }
+
+      img, svg, video, canvas, audio, iframe, embed, object {
+        display: block;
+        vertical-align: middle;
+      }
+
+      img, video {
+        max-width: 100%;
+        height: auto;
+      }
+
+      [hidden] {
+        display: none;
+      }
+
+      /* VSCode theme integration with utility-friendly base */
       body {
         font-family: var(--vscode-font-family);
         font-size: var(--vscode-font-size);
@@ -158,6 +336,7 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         justify-content: center;
         min-height: 100vh;
       }
+
       .container {
         max-width: 800px;
         width: 100%;
@@ -165,11 +344,13 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         flex-direction: column;
         gap: 20px;
       }
+
       .title {
         font-size: 18px;
         font-weight: bold;
         color: var(--vscode-titleBar-activeForeground);
       }
+
       .prompt-section {
         background-color: var(--vscode-editor-inactiveSelectionBackground);
         border: 1px solid var(--vscode-widget-border);
@@ -184,20 +365,24 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         flex-direction: column;
         gap: 10px;
       }
+
       .prompt-label {
         font-weight: bold;
         color: var(--vscode-textLink-foreground);
         display: block;
       }
+
       .input-section {
         display: flex;
         flex-direction: column;
         gap: 8px;
       }
+
       .input-label {
         font-weight: bold;
         display: block;
       }
+
       #responseInput {
         width: 100%;
         min-height: 100px;
@@ -209,17 +394,15 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         font-family: var(--vscode-editor-font-family);
         font-size: var(--vscode-editor-font-size);
         resize: vertical;
-        outline: none;
         box-sizing: border-box;
       }
-      #responseInput:focus {
-        border-color: var(--vscode-focusBorder);
-      }
+
       .button-container {
         display: flex;
         justify-content: flex-end;
         gap: 10px;
       }
+
       button {
         padding: 8px 16px;
         border: none;
@@ -227,24 +410,23 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         cursor: pointer;
         font-size: 13px;
       }
+
       .submit-btn {
         background-color: var(--vscode-button-background);
         color: var(--vscode-button-foreground);
       }
+
       .submit-btn:hover {
         background-color: var(--vscode-button-hoverBackground);
       }
+
       .cancel-btn {
         background-color: var(--vscode-button-secondaryBackground);
         color: var(--vscode-button-secondaryForeground);
       }
+
       .cancel-btn:hover {
         background-color: var(--vscode-button-secondaryHoverBackground);
-      }
-      .tip {
-        font-size: 12px;
-        color: var(--vscode-descriptionForeground);
-        font-style: italic;
       }
     `;
   }
@@ -388,14 +570,13 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         <div class="title">${title}</div>
         
         <div class="prompt-section">
-          <span class="prompt-label">Question (you can select and copy this text):</span>
+          <span class="prompt-label">Question:</span>
           ${prompt}
         </div>
         
         <div class="input-section">
           <label class="input-label" for="responseInput">Your Response:</label>
           <textarea id="responseInput" placeholder="Enter your response here..."></textarea>
-          <div class="tip">Tip: You can select and copy any text from the question above.</div>
         </div>
         
         <div class="button-container">
