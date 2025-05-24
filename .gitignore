@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+.env
+.venv
+venv/
+
+# VS Code Extension
+extension/node_modules/
+extension/out/
+extension/dist/
+extension/.vscode-test/
+extension/*.vsix
+
+# IDE & Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# MCP specific
+*.mcp
+.mcp/

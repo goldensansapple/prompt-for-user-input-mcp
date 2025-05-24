@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "prompt-for-user-input-mcp": {
+      "url": "http://localhost:8000/sse"
+    }
+  }
+} 
