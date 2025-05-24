@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "prompt-for-user-input-mcp": {
-      "url": "http://127.0.0.1:8000/prompt-for-user-input-mcp"
+      "url": "http://127.0.0.1:8000/prompt-for-user-input-mcp/"
     }
   }
 } 

@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "prompt-user-input-mcp"
 version = "0.1.0"
 description = "MCP server that allows models to prompt users for input"
-authors = [{ name = "Jesse Gomez", email = "59100457+goldensansapple@users.noreply.github.com" }]
+authors = [{ name = "Jesse Gomez", email = "jesse.gomez201@gmail.com" }]
 license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.8"

@@ -154,15 +154,20 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         background-color: var(--vscode-editor-background);
         padding: 20px;
         margin: 0;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
       }
       .container {
         max-width: 800px;
-        margin: 0 auto;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
       }
       .title {
         font-size: 18px;
         font-weight: bold;
-        margin-bottom: 20px;
         color: var(--vscode-titleBar-activeForeground);
       }
       .prompt-section {
@@ -170,25 +175,27 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         border: 1px solid var(--vscode-widget-border);
         border-radius: 4px;
         padding: 15px;
-        margin-bottom: 20px;
         font-family: var(--vscode-editor-font-family);
         white-space: pre-wrap;
         word-wrap: break-word;
         user-select: text;
         cursor: text;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
       }
       .prompt-label {
         font-weight: bold;
         color: var(--vscode-textLink-foreground);
-        margin-bottom: 10px;
         display: block;
       }
       .input-section {
-        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
       }
       .input-label {
         font-weight: bold;
-        margin-bottom: 8px;
         display: block;
       }
       #responseInput {
@@ -203,17 +210,18 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         font-size: var(--vscode-editor-font-size);
         resize: vertical;
         outline: none;
+        box-sizing: border-box;
       }
       #responseInput:focus {
         border-color: var(--vscode-focusBorder);
       }
       .button-container {
-        margin-top: 15px;
-        text-align: right;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
       }
       button {
         padding: 8px 16px;
-        margin-left: 10px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
@@ -236,7 +244,6 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
       .tip {
         font-size: 12px;
         color: var(--vscode-descriptionForeground);
-        margin-top: 10px;
         font-style: italic;
       }
     `;
@@ -274,6 +281,24 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         }
       }
       
+      function saveState() {
+        const input = document.getElementById('responseInput');
+        if (input) {
+          vscode.setState({ inputText: input.value });
+          console.log('State saved:', input.value);
+        }
+      }
+      
+      function restoreState() {
+        const previousState = vscode.getState();
+        const input = document.getElementById('responseInput');
+        
+        if (previousState && previousState.inputText && input) {
+          input.value = previousState.inputText;
+          console.log('State restored:', previousState.inputText);
+        }
+      }
+      
       function handleKeyDown(e) {
         console.log('Key pressed:', e.key, 'Ctrl:', e.ctrlKey, 'Shift:', e.shiftKey);
         
@@ -305,7 +330,17 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
         const cancelBtn = document.querySelector('.cancel-btn');
         
         if (responseInput) {
+          // Restore previous state first
+          restoreState();
+          
           responseInput.addEventListener('keydown', handleKeyDown);
+          
+          // Save state on every input change
+          responseInput.addEventListener('input', saveState);
+          
+          // Save state when losing focus
+          responseInput.addEventListener('blur', saveState);
+          
           responseInput.focus();
           console.log('Event listeners added to textarea');
         } else {
@@ -341,6 +376,9 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
           console.log('Input focused on window load');
         }
       });
+      
+      // Save state before the webview might be destroyed
+      window.addEventListener('beforeunload', saveState);
     `;
   }
 
