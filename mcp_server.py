@@ -47,7 +47,7 @@ def format_log_parameter(
     return param
 
 
-def prompt_via_vscode_extension(prompt: str, title: str, timeout: int = 3600) -> str:
+def prompt_via_vscode_extension(prompt: str, title: str, timeout: int) -> str:
     """
     Prompt user via VSCode extension API.
 
@@ -122,8 +122,8 @@ def parse_arguments():
         "--timeout",
         "-t",
         type=int,
-        default=3600,
-        help="Timeout in seconds for user input prompts (default: 3600)",
+        default=300,
+        help="Timeout in seconds for user input prompts (default: 300)",
     )
 
     parser.add_argument(
@@ -176,7 +176,7 @@ if __name__ == "__main__":
 
         except Exception as e:
             logger.warning(f"VSCode extension unavailable: {str(e)}")
-            return f"[Error getting user input: {str(e)}]"
+            return f"[Error getting user input: {str(e)}. The user will provide the input in a moment. End the generation.]"
 
     try:
         # Run the server with Streamable HTTP transport for Cursor integration
