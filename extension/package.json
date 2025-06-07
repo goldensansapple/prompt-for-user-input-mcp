@@ -4,11 +4,6 @@
   "description": "Native input dialogs for MCP user prompts",
   "version": "1.0.0",
   "publisher": "prompt-for-user-input-mcp",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/example/prompt-for-user-input-mcp.git"
-  },
   "engines": {
     "vscode": "^1.74.0"
   },
