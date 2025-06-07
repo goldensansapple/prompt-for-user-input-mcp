@@ -2,20 +2,11 @@
 
 An MCP (Model Context Protocol) server that enables AI models to prompt users for input directly through their code editor. This creates an interactive experience where AI assistants can ask questions, request clarification, or gather information from users in real-time during conversations.
 
-## How It Works
-
-The system consists of two components:
-
-1. **MCP Server** (`mcp_server.py`): Provides a `prompt_for_user_input` tool that AI models can call
-2. **Cursor Extension** (`extension/`): A VSCode/Cursor extension that displays user prompts and collects responses
-
-When an AI model needs user input, it calls the MCP tool, which communicates with the extension via HTTP to show a dialog in the editor.
-
 ## Quick Start
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3
 - Cursor IDE (or VSCode)
 - Node.js (for building the extension)
 
