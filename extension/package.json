@@ -3,7 +3,7 @@
   "displayName": "Prompt For User Input MCP",
   "description": "Native input dialogs for MCP user prompts",
   "version": "1.0.0",
-  "publisher": "prompt-for-user-input-mcp",
+  "publisher": "Jesse Gomez",
   "engines": {
     "vscode": "^1.74.0"
   },

@@ -165,7 +165,7 @@ if __name__ == "__main__":
 
     @mcp.tool(
         name="prompt_for_user_input",
-        description="Prompt the user for input with an optional title.",
+        description="Prompt the user for input with an optional title. Use this to ask questions, get clarification, or request information from the user.",
     )
     async def prompt_for_user_input(
         prompt: str, title: str = "User Input Required"
