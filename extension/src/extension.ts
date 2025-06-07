@@ -37,6 +37,7 @@ function startLocalServer() {
   app.post("/prompt", (req: express.Request, res: express.Response) => {
     (async () => {
       try {
+        res.setTimeout(60 * 60 * 1000); // 1 hour timeout
         const { id, title = "User Input Required", prompt } = req.body;
 
         if (!id || !prompt) {

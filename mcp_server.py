@@ -6,7 +6,8 @@ import subprocess
 import tempfile
 import time
 import logging
-import requests
+import aiohttp
+import asyncio
 import uuid
 import argparse
 from mcp.server.fastmcp import FastMCP
@@ -47,7 +48,7 @@ def format_log_parameter(
     return param
 
 
-def prompt_via_vscode_extension(prompt: str, title: str, timeout: int) -> str:
+async def prompt_via_vscode_extension(prompt: str, title: str, timeout: int) -> str:
     """
     Prompt user via VSCode extension API.
 
@@ -63,34 +64,44 @@ def prompt_via_vscode_extension(prompt: str, title: str, timeout: int) -> str:
         logger.info(
             f"Checking VSCode extension health at {VSCODE_EXTENSION_URL}/health..."
         )
-        health_response = requests.get(f"{VSCODE_EXTENSION_URL}/health", timeout=2)
-        if health_response.status_code != 200:
-            raise Exception("Extension health check failed")
+        
+        # Use aiohttp for async HTTP requests to avoid blocking
+        timeout_config = aiohttp.ClientTimeout(total=timeout)
+        async with aiohttp.ClientSession(timeout=timeout_config) as session:
+            # Health check with shorter timeout
+            health_timeout = aiohttp.ClientTimeout(total=2)
+            async with session.get(f"{VSCODE_EXTENSION_URL}/health", timeout=health_timeout) as health_response:
+                if health_response.status != 200:
+                    raise Exception("Extension health check failed")
 
-        prompt_data = {"id": str(uuid.uuid4()), "title": title, "prompt": prompt}
+            prompt_data = {"id": str(uuid.uuid4()), "title": title, "prompt": prompt}
 
-        logger.info(
-            f"Sending prompt to VSCode extension: {format_log_parameter(prompt_data['title'], need_apply_ellipsis=False)}..."
-        )
-        response = requests.post(
-            f"{VSCODE_EXTENSION_URL}/prompt",
-            json=prompt_data,
-            timeout=timeout,
-        )
+            logger.info(
+                f"Sending prompt to VSCode extension: {format_log_parameter(prompt_data['title'], need_apply_ellipsis=False)}..."
+            )
+            
+            # Use the full timeout for the prompt request
+            async with session.post(
+                f"{VSCODE_EXTENSION_URL}/prompt",
+                json=prompt_data,
+                timeout=timeout_config,
+            ) as response:
+                if response.status == 200:
+                    response_data = await response.json()
+                    result = response_data.get("response")
+                    if result:
+                        logger.info(
+                            f"Received response from VSCode extension: {format_log_parameter(result)}"
+                        )
+                        return result
+                    else:
+                        raise Exception("No response from extension")
+                else:
+                    raise Exception(f"Request failed with status {response.status}")
 
-        if response.status_code == 200:
-            result = response.json().get("response")
-            if result:
-                logger.info(
-                    f"Received response from VSCode extension: {format_log_parameter(result)}"
-                )
-                return result
-            else:
-                raise Exception("No response from extension")
-        else:
-            raise Exception(f"Request failed with status {response.status_code}")
-
-    except requests.exceptions.RequestException as e:
+    except asyncio.TimeoutError as e:
+        raise Exception(f"Timeout error: {e}")
+    except aiohttp.ClientError as e:
         raise Exception(f"Network error: {e}")
     except Exception as e:
         raise Exception(f"Extension error: {e}")
@@ -122,8 +133,8 @@ def parse_arguments():
         "--timeout",
         "-t",
         type=int,
-        default=300,
-        help="Timeout in seconds for user input prompts (default: 300)",
+        default=3600,
+        help="Timeout in seconds for user input prompts (default: 3600)",
     )
 
     parser.add_argument(
@@ -156,7 +167,7 @@ if __name__ == "__main__":
         name="prompt_for_user_input",
         description="Prompt the user for input with an optional title.",
     )
-    def prompt_for_user_input(prompt: str, title: str = "User Input Required") -> str:
+    async def prompt_for_user_input(prompt: str, title: str = "User Input Required") -> str:
         """
         Prompt the user for input with an optional title.
         Use this to ask questions, get clarification, or request information from the user.
@@ -172,11 +183,15 @@ if __name__ == "__main__":
             logger.info(
                 f"Attempting VSCode extension prompt: {format_log_parameter(title, need_apply_ellipsis=False)}..."
             )
-            return prompt_via_vscode_extension(prompt, title, args.timeout)
+            result = await prompt_via_vscode_extension(prompt, title, args.timeout)
+            logger.info(f"Successfully obtained user response, returning to MCP client: {format_log_parameter(result)}")
+            return result
 
-        except Exception as e:
-            logger.warning(f"VSCode extension unavailable: {str(e)}")
-            return f"[Error getting user input: {str(e)}. The user will provide the input in a moment. End the generation.]"
+        except Exception as error:
+            error_message = f"[Error getting user input: {str(error)}. The user will provide the input in a moment. End the generation.]"
+            logger.warning(f"VSCode extension unavailable: {str(error)}")
+            logger.info(f"Returning error message to MCP client: {error_message}")
+            return error_message
 
     try:
         # Run the server with Streamable HTTP transport for Cursor integration
@@ -186,16 +201,16 @@ if __name__ == "__main__":
         mcp.run(
             transport="streamable-http",
         )
-    except OSError as e:
-        if "Address already in use" in str(e):
+    except OSError as error:
+        if "Address already in use" in str(error):
             logger.error(f"Port {args.port} is already in use.")
             sys.exit(1)
         else:
-            logger.error(f"Unexpected error: {str(e)}")
+            logger.error(f"Unexpected error: {str(error)}")
             sys.exit(1)
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
         sys.exit(0)
-    except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
+    except Exception as error:
+        logger.error(f"Unexpected error: {str(error)}")
         sys.exit(1)
