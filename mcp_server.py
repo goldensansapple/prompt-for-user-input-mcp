@@ -23,7 +23,7 @@ VSCODE_EXTENSION_URL = "http://localhost:3001"
 
 def format_log_parameter(
     param: str,
-    need_apply_ellipsis: bool = True,
+    ellipsis: bool = True,
     max_length: int = 50,
 ) -> str:
     """
@@ -38,7 +38,7 @@ def format_log_parameter(
     """
 
     # Regular parameters: truncate if too long
-    if len(param) > max_length and need_apply_ellipsis:
+    if len(param) > max_length and ellipsis:
         return param[: max_length - 3] + "..."
     elif len(param) > max_length:
         return param[:max_length]
@@ -77,7 +77,7 @@ async def prompt_via_vscode_extension(prompt: str, title: str, timeout: int) -> 
             prompt_data = {"id": str(uuid.uuid4()), "title": title, "prompt": prompt}
 
             logger.info(
-                f"Sending prompt to VSCode extension: {format_log_parameter(prompt_data['title'], need_apply_ellipsis=False)}..."
+                f"Sending prompt to VSCode extension: {format_log_parameter(prompt_data['title'], ellipsis=False)}..."
             )
 
             # Use the full timeout for the prompt request
@@ -183,7 +183,7 @@ if __name__ == "__main__":
         """
         try:
             logger.info(
-                f"Attempting VSCode extension prompt: {format_log_parameter(title, need_apply_ellipsis=False)}..."
+                f"Attempting VSCode extension prompt: {format_log_parameter(title, ellipsis=False)}..."
             )
             result = await prompt_via_vscode_extension(prompt, title, args.timeout)
             logger.info(
