@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os
 import sys
 import subprocess
@@ -64,13 +62,15 @@ async def prompt_via_vscode_extension(prompt: str, title: str, timeout: int) -> 
         logger.info(
             f"Checking VSCode extension health at {VSCODE_EXTENSION_URL}/health..."
         )
-        
+
         # Use aiohttp for async HTTP requests to avoid blocking
         timeout_config = aiohttp.ClientTimeout(total=timeout)
         async with aiohttp.ClientSession(timeout=timeout_config) as session:
             # Health check with shorter timeout
             health_timeout = aiohttp.ClientTimeout(total=2)
-            async with session.get(f"{VSCODE_EXTENSION_URL}/health", timeout=health_timeout) as health_response:
+            async with session.get(
+                f"{VSCODE_EXTENSION_URL}/health", timeout=health_timeout
+            ) as health_response:
                 if health_response.status != 200:
                     raise Exception("Extension health check failed")
 
@@ -79,7 +79,7 @@ async def prompt_via_vscode_extension(prompt: str, title: str, timeout: int) -> 
             logger.info(
                 f"Sending prompt to VSCode extension: {format_log_parameter(prompt_data['title'], need_apply_ellipsis=False)}..."
             )
-            
+
             # Use the full timeout for the prompt request
             async with session.post(
                 f"{VSCODE_EXTENSION_URL}/prompt",
@@ -167,7 +167,9 @@ if __name__ == "__main__":
         name="prompt_for_user_input",
         description="Prompt the user for input with an optional title.",
     )
-    async def prompt_for_user_input(prompt: str, title: str = "User Input Required") -> str:
+    async def prompt_for_user_input(
+        prompt: str, title: str = "User Input Required"
+    ) -> str:
         """
         Prompt the user for input with an optional title.
         Use this to ask questions, get clarification, or request information from the user.
@@ -184,7 +186,9 @@ if __name__ == "__main__":
                 f"Attempting VSCode extension prompt: {format_log_parameter(title, need_apply_ellipsis=False)}..."
             )
             result = await prompt_via_vscode_extension(prompt, title, args.timeout)
-            logger.info(f"Successfully obtained user response, returning to MCP client: {format_log_parameter(result)}")
+            logger.info(
+                f"Successfully obtained user response, returning to MCP client: {format_log_parameter(result)}"
+            )
             return result
 
         except Exception as error:
