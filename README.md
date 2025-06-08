@@ -2,10 +2,6 @@
 
 An MCP (Model Context Protocol) server that enables AI models to prompt users for input directly through their code editor. This creates an interactive experience where AI assistants can ask questions, request clarification, or gather information from users in real-time during conversations.
 
-## Cursor One-Click
-
-[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=prompt-for-user-input-mcp&config=eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvcHJvbXB0LWZvci11c2VyLWlucHV0LW1jcC8ifQ%3D%3D)
-
 ## Quick Start
 
 ### Prerequisites
@@ -36,9 +32,13 @@ py mcp_server.py --host 127.0.0.1 --port 8000 --timeout 900 --vscode-port 3001
 
 The server will start on `http://127.0.0.1:8000` by default.
 
-### 4. Configure Cursor
+### Configure Cursor
 
-Add the MCP server configuration to your Cursor settings. Create or update your MCP configuration file with:
+Add the MCP server configuration to your Cursor settings with the button below.
+
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=prompt-for-user-input-mcp&config=eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvcHJvbXB0LWZvci11c2VyLWlucHV0LW1jcC8ifQ%3D%3D)
+
+OR Create or update your MCP configuration file with:
 
 ```json
 {
@@ -50,7 +50,7 @@ Add the MCP server configuration to your Cursor settings. Create or update your 
 }
 ```
 
-For Cursor, you can use the provided `cursor-mcp-config.json` file as a reference, or use the one-click deeplink at the top of the README.
+For Cursor, you can use the provided `cursor-mcp-config.json` file as a reference, or use the one-click deeplink.
 
 ## Configuration Options
 
