@@ -152,7 +152,8 @@ def parse_arguments():
     return parser.parse_args()
 
 
-if __name__ == "__main__":
+def main():
+    """Main entry point for the MCP server."""
     args = parse_arguments()
 
     # Set the VSCode extension URL based on the command line argument
@@ -226,3 +227,7 @@ if __name__ == "__main__":
     except Exception as error:
         logger.error(f"Unexpected error: {str(error)}")
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

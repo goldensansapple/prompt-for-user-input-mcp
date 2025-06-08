@@ -1,0 +1,9 @@
+include README.md
+include LICENSE
+include CHANGELOG.md
+include requirements.txt
+include cursor-mcp-config.json
+recursive-include extension *
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store 
