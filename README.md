@@ -12,37 +12,19 @@ An MCP (Model Context Protocol) server that enables AI models to prompt users fo
 
 - Python 3
 - Cursor IDE (or VSCode)
-- Node.js (for building the extension)
 
-### 1. Install the MCP Server
+### Install the MCP Server
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/goldensansapple/prompt-for-user-input-mcp.git
 cd prompt_for_user_input_mcp
 
 # Install Python dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Install and Activate the Cursor Extension
-
-```bash
-# Navigate to the extension directory
-cd extension
-
-# Package the extension into a VSIX
-vsce package
-```
-
-Install the extension in Cursor:
-
-1. Open Cursor
-2. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
-3. Type "Extensions: Install from VSIX..."
-4. Select the `.vsix` file from the `extension` directory
-
-### 3. Start the MCP Server
+### Start the MCP Server
 
 ```bash
 # From the project root directory
@@ -68,7 +50,7 @@ Add the MCP server configuration to your Cursor settings. Create or update your 
 }
 ```
 
-For Cursor, you can use the provided `cursor-mcp-config.json` file as a reference.
+For Cursor, you can use the provided `cursor-mcp-config.json` file as a reference, or use the one-click deeplink at the top of the README.
 
 ## Configuration Options
 
