@@ -1,3 +1,11 @@
+# Copyright (c) 2025 Jesse Gomez
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 import os
 import sys
 import subprocess
@@ -42,7 +50,9 @@ def format_log_parameter(
     return param
 
 
-async def prompt_via_vscode_extension(prompt: str, title: str, timeout: int, vscode_url: str) -> str:
+async def prompt_via_vscode_extension(
+    prompt: str, title: str, timeout: int, vscode_url: str
+) -> str:
     """
     Prompt user via VSCode extension API.
 
@@ -56,9 +66,7 @@ async def prompt_via_vscode_extension(prompt: str, title: str, timeout: int, vsc
         The user's response as a string
     """
     try:
-        logger.info(
-            f"Checking VSCode extension health at {vscode_url}/health..."
-        )
+        logger.info(f"Checking VSCode extension health at {vscode_url}/health...")
 
         # Use aiohttp for async HTTP requests to avoid blocking
         timeout_config = aiohttp.ClientTimeout(total=timeout)
@@ -194,7 +202,9 @@ def main():
             logger.info(
                 f"Attempting VSCode extension prompt: {format_log_parameter(title, ellipsis=False)}..."
             )
-            result = await prompt_via_vscode_extension(prompt, title, args.timeout, vscode_extension_url)
+            result = await prompt_via_vscode_extension(
+                prompt, title, args.timeout, vscode_extension_url
+            )
             logger.info(
                 f"Successfully obtained user response, returning to MCP client: {format_log_parameter(result)}"
             )
