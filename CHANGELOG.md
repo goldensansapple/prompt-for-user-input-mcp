@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-06-07
 
 ### Added
+
 - Initial release of the Prompt for User Input MCP Server
 - MCP server that enables AI models to prompt users for input through their code editor
 - VS Code extension for native input dialogs
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Console script entry point for easy installation
 
 ### Features
+
 - **MCP Server**: Streamable HTTP transport compatible with Cursor IDE
 - **VS Code Extension**: Native input dialogs with keyboard shortcuts
 - **Interactive Experience**: Real-time Q&A between AI and users
@@ -28,9 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation**: Complete setup and usage instructions
 
 ### Technical Details
+
 - Python 3.8+ compatibility
 - FastMCP framework integration
 - Aiohttp for async HTTP operations
 - Express.js backend for VS Code extension
 - TypeScript extension with proper bundling
-- MIT License for open source distribution 
+- MIT License for open source distribution
