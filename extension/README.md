@@ -1,57 +1,73 @@
-# Prompt For User Input MCP
+# Prompt for User Input MCP Server
 
-A VSCode extension that enables AI assistants and MCP (Model Context Protocol) servers to interactively request user input through native VSCode dialogs. This creates a seamless experience where AI assistants can ask questions, request clarification, or gather information from users in real-time during conversations.
+An MCP (Model Context Protocol) server that enables AI models to prompt users for input directly through their code editor. This creates an interactive experience where AI assistants can ask questions, request clarification, or gather information from users in real-time during conversations.
 
-## Installation
+## Quick Start
 
-### From VSCode Marketplace
+### Prerequisites
 
-1. Open VSCode
-2. Go to Extensions (Ctrl+Shift+X)
-3. Search for "Prompt For User Input MCP"
-4. Click Install
+- Python 3
+- Cursor IDE (or VSCode)
 
-## Setup with MCP Server
+### Install the MCP Server
 
-This extension works with the companion MCP server. To set up the complete system:
+```bash
+# Clone the repository
+git clone https://github.com/goldensansapple/prompt-for-user-input-mcp.git
+cd prompt_for_user_input_mcp
 
-1. **Install the MCP Server**: Follow the instructions at [prompt-for-user-input-mcp](https://github.com/goldensansapple/prompt-for-user-input-mcp)
-2. **Start the Server**: Run the MCP server on your local machine
-3. **Configure Your AI Assistant**: Add the MCP server to your AI assistant's configuration
-4. **Install This Extension**: Install this VSCode extension
-5. **Ready to Go**: Your AI assistant can now prompt for user input!
+# Install Python dependencies
+pip install -r requirements.txt
+```
 
-## Usage
+### Start the MCP Server
 
-Once installed and configured, the extension works automatically. When an AI assistant needs user input:
+```bash
+# From the project root directory
+py mcp_server.py
 
-1. A dialog will appear in VSCode with the AI's question
-2. Type your response in the text area
-3. Press Enter or click Submit to send your response
-4. The AI assistant will receive your input and continue
+# Or with custom options
+py mcp_server.py --host 127.0.0.1 --port 8000 --timeout 900 --vscode-port 3001
+```
 
-### Keyboard Shortcuts
+The server will start on `http://127.0.0.1:8000` by default.
 
-- **Enter**: Submit response
-- **Shift+Enter**: Add new line
-- **Escape**: Cancel (sends "[Cancelled by user]" to the AI)
+### Configure Cursor
 
-## Configuration
+Add the MCP server configuration to your Cursor settings with the button below.
 
-The extension runs on port 3001 by default. You can change this in the extension settings:
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=prompt-for-user-input-mcp&config=eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvcHJvbXB0LWZvci11c2VyLWlucHV0LW1jcC8ifQ%3D%3D)
+
+OR Create or update your MCP configuration file with:
+
+```json
+{
+  "mcpServers": {
+    "prompt-for-user-input-mcp": {
+      "url": "http://127.0.0.1:8000/prompt-for-user-input-mcp/"
+    }
+  }
+}
+```
+
+For Cursor, you can use the provided `cursor-mcp-config.json` file as a reference, or use the one-click deeplink.
+
+## Configuration Options
+
+### MCP Server Options
+
+- `--host`: Host to run the server on (default: 127.0.0.1)
+- `--port`: Port to run the server on (default: 8000)
+- `--timeout`: Timeout in seconds for user responses (default: 900)
+- `--vscode-port`: Port where the VSCode extension is running (default: 3001)
+
+### VSCode Extension Options
+
+The VSCode extension port can be configured through the extension settings:
 
 1. Open VSCode Settings (Ctrl+,)
 2. Search for "Prompt For User Input MCP"
 3. Modify the "Server Port" setting to your desired port number
 4. Restart VSCode for the changes to take effect
 
-The port must be different from your MCP server port and within the range 1024-65535.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Related Projects
-
-- [MCP Server](https://github.com/goldensansapple/prompt-for-user-input-mcp) - The companion MCP server
-- [Model Context Protocol](https://github.com/modelcontextprotocol/specification) - The protocol specification
+**Important:** Make sure the `--vscode-port` argument matches the port configured in your VSCode extension settings.
