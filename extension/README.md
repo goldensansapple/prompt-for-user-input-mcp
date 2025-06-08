@@ -32,7 +32,7 @@ py mcp_server.py --host 127.0.0.1 --port 8000 --timeout 900 --vscode-port 3001
 
 The server will start on `http://127.0.0.1:8000` by default.
 
-### Configure Cursor
+### Configure Cursor/VSCode
 
 Add the MCP server configuration to your Cursor settings with the button below.
 
