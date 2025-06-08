@@ -2,6 +2,10 @@
 
 An MCP (Model Context Protocol) server that enables AI models to prompt users for input directly through their code editor. This creates an interactive experience where AI assistants can ask questions, request clarification, or gather information from users in real-time during conversations.
 
+## Cursor One-Click
+
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=prompt-for-user-input-mcp&config=eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvcHJvbXB0LWZvci11c2VyLWlucHV0LW1jcC8ifQ%3D%3D)
+
 ## Quick Start
 
 ### Prerequisites

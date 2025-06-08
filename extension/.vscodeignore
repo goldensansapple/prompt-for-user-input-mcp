@@ -13,10 +13,6 @@ node_modules/**
 *.vsix
 package-lock.json
 
-# Documentation
-*.md
-LICENSE
-
 # Development configs
 .eslintrc*
 .prettierrc*
@@ -34,4 +30,9 @@ Thumbs.db
 **/*spec*
 
 # Logs
-*.log 
+*.log
+
+# Include these important files
+!README.md
+!LICENSE
+!icon.png 

@@ -1,22 +1,58 @@
 {
   "name": "prompt-for-user-input-mcp",
   "displayName": "Prompt For User Input MCP",
-  "description": "Native input dialogs for MCP user prompts",
+  "description": "Native input dialogs for MCP user prompts - enables AI assistants to interactively request user input through VSCode",
   "version": "1.0.0",
-  "publisher": "Jesse Gomez",
+  "publisher": "goldensansapple",
+  "author": {
+    "name": "Jesse Gomez",
+    "url": "https://github.com/goldensansapple"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/goldensansapple/prompt-for-user-input-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goldensansapple/prompt-for-user-input-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/goldensansapple/prompt-for-user-input-mcp/issues"
+  },
+  "keywords": [
+    "mcp",
+    "ai",
+    "input",
+    "prompt",
+    "assistant",
+    "dialog",
+    "user-input",
+    "interactive",
+    "model-context-protocol",
+    "cursor",
+    "claude",
+    "llm"
+  ],
   "engines": {
     "vscode": "^1.74.0"
   },
-  "categories": ["Other"],
+  "categories": [
+    "Other",
+    "Extension Packs"
+  ],
   "activationEvents": [
     "onStartupFinished"
   ],
   "main": "./out/extension.js",
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#0a0a0a",
+    "theme": "dark"
+  },
   "contributes": {
     "commands": [
       {
         "command": "promptForUserInputMcp.showInputDialog",
-        "title": "Show Input Dialog"
+        "title": "Show Input Dialog",
+        "category": "MCP"
       }
     ]
   },
@@ -25,7 +61,9 @@
     "compile": "tsc -p .",
     "watch": "tsc -watch -p ./",
     "bundle": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --minify",
-    "bundle:watch": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --watch"
+    "bundle:watch": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --watch",
+    "package": "vsce package",
+    "publish": "vsce publish"
   },
   "devDependencies": {
     "@types/vscode": "^1.74.0",
