@@ -62,7 +62,10 @@ function startLocalServer() {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
-  const port = 3001; // Different from MCP server port
+  // Get port from settings or use default
+  const config = vscode.workspace.getConfiguration('promptForUserInputMcp');
+  const port = config.get<number>('serverPort', 3001);
+  
   server = app.listen(port, "localhost", () => {
     console.log(
       `VSCode extension server listening on http://localhost:${port}`

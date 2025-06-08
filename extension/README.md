@@ -38,7 +38,14 @@ Once installed and configured, the extension works automatically. When an AI ass
 
 ## Configuration
 
-The extension runs on port 3001 by default. If you need to change this, you can modify the port in the extension settings or rebuild the extension.
+The extension runs on port 3001 by default. You can change this in the extension settings:
+
+1. Open VSCode Settings (Ctrl+,)
+2. Search for "Prompt For User Input MCP"
+3. Modify the "Server Port" setting to your desired port number
+4. Restart VSCode for the changes to take effect
+
+The port must be different from your MCP server port and within the range 1024-65535.
 
 ## License
 

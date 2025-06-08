@@ -54,7 +54,19 @@
         "title": "Show Input Dialog",
         "category": "MCP"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Prompt For User Input MCP",
+      "properties": {
+        "promptForUserInputMcp.serverPort": {
+          "type": "number",
+          "default": 3001,
+          "minimum": 1024,
+          "maximum": 65535,
+          "description": "Port number for the extension's HTTP server. Must be different from the MCP server port."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run bundle",

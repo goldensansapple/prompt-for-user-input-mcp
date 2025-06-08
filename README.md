@@ -49,7 +49,7 @@ Install the extension in Cursor:
 py mcp_server.py
 
 # Or with custom options
-py mcp_server.py --host 127.0.0.1 --port 8000 --timeout 3600
+py mcp_server.py --host 127.0.0.1 --port 8000 --timeout 900 --vscode-port 3001
 ```
 
 The server will start on `http://127.0.0.1:8000` by default.
@@ -76,4 +76,16 @@ For Cursor, you can use the provided `cursor-mcp-config.json` file as a referenc
 
 - `--host`: Host to run the server on (default: 127.0.0.1)
 - `--port`: Port to run the server on (default: 8000)
-- `--timeout`: Timeout in seconds for user responses (default: 3600)
+- `--timeout`: Timeout in seconds for user responses (default: 900)
+- `--vscode-port`: Port where the VSCode extension is running (default: 3001)
+
+### VSCode Extension Options
+
+The VSCode extension port can be configured through the extension settings:
+
+1. Open VSCode Settings (Ctrl+,)
+2. Search for "Prompt For User Input MCP"
+3. Modify the "Server Port" setting to your desired port number
+4. Restart VSCode for the changes to take effect
+
+**Important:** Make sure the `--vscode-port` argument matches the port configured in your VSCode extension settings.

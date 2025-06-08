@@ -17,10 +17,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# VSCode extension endpoint
-VSCODE_EXTENSION_URL = "http://localhost:3001"
-
-
 def format_log_parameter(
     param: str,
     ellipsis: bool = True,
@@ -46,7 +42,7 @@ def format_log_parameter(
     return param
 
 
-async def prompt_via_vscode_extension(prompt: str, title: str, timeout: int) -> str:
+async def prompt_via_vscode_extension(prompt: str, title: str, timeout: int, vscode_url: str) -> str:
     """
     Prompt user via VSCode extension API.
 
@@ -54,13 +50,14 @@ async def prompt_via_vscode_extension(prompt: str, title: str, timeout: int) -> 
         prompt: The message/question to show to the user
         title: Optional title for the prompt dialog
         timeout: Timeout in seconds for waiting for user response
+        vscode_url: The base URL for the VSCode extension
 
     Returns:
         The user's response as a string
     """
     try:
         logger.info(
-            f"Checking VSCode extension health at {VSCODE_EXTENSION_URL}/health..."
+            f"Checking VSCode extension health at {vscode_url}/health..."
         )
 
         # Use aiohttp for async HTTP requests to avoid blocking
@@ -69,7 +66,7 @@ async def prompt_via_vscode_extension(prompt: str, title: str, timeout: int) -> 
             # Health check with shorter timeout
             health_timeout = aiohttp.ClientTimeout(total=2)
             async with session.get(
-                f"{VSCODE_EXTENSION_URL}/health", timeout=health_timeout
+                f"{vscode_url}/health", timeout=health_timeout
             ) as health_response:
                 if health_response.status != 200:
                     raise Exception("Extension health check failed")
@@ -82,7 +79,7 @@ async def prompt_via_vscode_extension(prompt: str, title: str, timeout: int) -> 
 
             # Use the full timeout for the prompt request
             async with session.post(
-                f"{VSCODE_EXTENSION_URL}/prompt",
+                f"{vscode_url}/prompt",
                 json=prompt_data,
                 timeout=timeout_config,
             ) as response:
@@ -111,7 +108,7 @@ def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
         description="MCP Server for User Input Prompts",
-        usage="py mcp_server.py [--host <host>] [--port <port>] [--timeout <seconds>]",
+        usage="py mcp_server.py [--host <host>] [--port <port>] [--timeout <seconds>] [--vscode-port <port>]",
     )
 
     parser.add_argument(
@@ -133,8 +130,15 @@ def parse_arguments():
         "--timeout",
         "-t",
         type=int,
-        default=3600,
-        help="Timeout in seconds for user input prompts (default: 3600)",
+        default=900,
+        help="Timeout in seconds for user input prompts (default: 900)",
+    )
+
+    parser.add_argument(
+        "--vscode-port",
+        type=int,
+        default=3001,
+        help="Port where the VSCode extension is running (default: 3001)",
     )
 
     parser.add_argument(
@@ -151,10 +155,14 @@ def parse_arguments():
 if __name__ == "__main__":
     args = parse_arguments()
 
+    # Set the VSCode extension URL based on the command line argument
+    vscode_extension_url = f"http://localhost:{args.vscode_port}"
+
     logger.info("Starting MCP server for user input prompts...")
     logger.info(f"Host: {args.host}")
     logger.info(f"Port: {args.port}")
     logger.info(f"Timeout: {args.timeout} seconds")
+    logger.info(f"VSCode extension URL: {vscode_extension_url}")
 
     mcp = FastMCP(
         "prompt-for-user-input-mcp",
@@ -185,7 +193,7 @@ if __name__ == "__main__":
             logger.info(
                 f"Attempting VSCode extension prompt: {format_log_parameter(title, ellipsis=False)}..."
             )
-            result = await prompt_via_vscode_extension(prompt, title, args.timeout)
+            result = await prompt_via_vscode_extension(prompt, title, args.timeout, vscode_extension_url)
             logger.info(
                 f"Successfully obtained user response, returning to MCP client: {format_log_parameter(result)}"
             )
