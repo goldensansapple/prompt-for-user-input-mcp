@@ -341,7 +341,7 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
       }
 
       .container {
-        max-width: 800px;
+        max-width: 1000px;
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -430,6 +430,30 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
 
       .cancel-btn:hover {
         background-color: var(--vscode-button-secondaryHoverBackground);
+      }
+
+      .main-section {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+      }
+
+      .prompt-section {
+        flex: 1;
+        max-height: calc(100vh - 160px);
+        overflow: auto;
+      }
+
+      .side-panel {
+        width: 35%;
+        min-width: 260px;
+        max-width: 400px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        position: sticky;
+        top: 20px;
       }
     `;
   }
@@ -571,20 +595,24 @@ class VSCodeWebviewTemplates implements WebviewTemplates {
     return `
       <div class="container">
         <div class="title">${title}</div>
-        
-        <div class="prompt-section">
-          <span class="prompt-label">Question:</span>
-          ${prompt}
-        </div>
-        
-        <div class="input-section">
-          <label class="input-label" for="responseInput">Your Response:</label>
-          <textarea id="responseInput" placeholder="Enter your response here..."></textarea>
-        </div>
-        
-        <div class="button-container">
-          <button class="cancel-btn">Cancel</button>
-          <button class="submit-btn">Submit</button>
+
+        <div class="main-section">
+          <div class="prompt-section">
+            <span class="prompt-label">Question:</span>
+            ${prompt}
+          </div>
+
+          <div class="side-panel">
+            <div class="input-section">
+              <label class="input-label" for="responseInput">Your Response:</label>
+              <textarea id="responseInput" placeholder="Enter your response here..."></textarea>
+            </div>
+
+            <div class="button-container">
+              <button class="cancel-btn">Cancel</button>
+              <button class="submit-btn">Submit</button>
+            </div>
+          </div>
         </div>
       </div>
     `;

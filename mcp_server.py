@@ -43,7 +43,10 @@ def format_log_parameter(
 
 
 async def prompt_via_vscode_extension(
-    prompt: str, title: str, timeout: int, vscode_url: str
+    prompt: str,
+    title: str,
+    timeout: int,
+    vscode_url: str,
 ) -> str:
     """
     Prompt user via VSCode extension API.
@@ -195,7 +198,10 @@ def main():
                 f"Attempting VSCode extension prompt: {format_log_parameter(title, ellipsis=False)}..."
             )
             result = await prompt_via_vscode_extension(
-                prompt, title, args.timeout, vscode_extension_url
+                prompt,
+                title,
+                args.timeout,
+                vscode_extension_url,
             )
             logger.info(
                 f"Successfully obtained user response, returning to MCP client: {format_log_parameter(result)}"

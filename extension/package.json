@@ -85,6 +85,6 @@
     "esbuild": "^0.25.0"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "5.1.0"
   }
 } 
