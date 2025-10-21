@@ -20,9 +20,9 @@ class PromptForUserInputResponse(BaseModel):
 async def prompt_for_user_input(prompt: str, ctx: Context[ServerSession, None]) -> str:
     """Prompt the user for input."""
     try:
-        logger.info("Prompting...")
+        logger.info("Prompting the user for input...")
         result = await ctx.elicit(message=prompt, schema=PromptForUserInputResponse)
-        logger.info("Successfully obtained user response, returning to MCP client")
+        logger.info("Successfully obtained the user's response. Returning it to the MCP client.")
         if result.action == "accept" and result.data:
             if result.data.response:
                 return result.data.response
@@ -30,7 +30,7 @@ async def prompt_for_user_input(prompt: str, ctx: Context[ServerSession, None]) 
                 return "The user did not provide a response."
         return "The user did not provide a response."
     except Exception as error:
-        error_message = f"[Error getting user input: {str(error)}. The user will provide the input in a moment. End the generation.]"
+        error_message = f"[Error retrieving user input: {error}. The user will provide the input shortly. End the generation.]"
         logger.info(f"Returning error message to MCP client: {error_message}")
         return error_message
 

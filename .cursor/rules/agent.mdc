@@ -1,0 +1,6 @@
+---
+alwaysApply: true
+---
+# Instructions
+
+This project is the `prompt-for-user-input-mcp` project. It is an MCP server that enables AI models to prompt users for input directly through their code editor. You will also have access to this tool as an AI agent, you can still use the tool while developing because a working version of the tool is already running in the background. Part your role will be to test this tool directly. This does not mean running the MCP server, but rather using the tool as an AI agent to allow the user to test the tool manually. You can always assume the user has launched the MCP server in a separate terminal window when they ask you to test the tool.
