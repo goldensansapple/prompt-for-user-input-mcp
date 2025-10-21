@@ -3,7 +3,6 @@ from mcp.server.fastmcp import FastMCP, Context
 from mcp.server.session import ServerSession
 from pydantic import BaseModel, Field
 
-# Set up logging
 logging.basicConfig(
     level=logging.INFO,
 )
