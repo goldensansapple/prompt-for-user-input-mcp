@@ -9,13 +9,6 @@ build/
 .venv
 venv/
 
-# VS Code Extension
-extension/node_modules/
-extension/out/
-extension/dist/
-extension/.vscode-test/
-extension/*.vsix
-
 # IDE & Editor
 .vscode/
 .idea/

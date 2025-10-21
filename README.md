@@ -10,9 +10,13 @@ IMPORTANT: Do not finish responding until explicitly told to do so; instead, alw
 
 ## Command and Setup
 
-```sh
+Run the server:
+
+```console
 uv run mcp_server.py
 ```
+
+Add the following to your Cursor MCP configuration:
 
 ```json
 {

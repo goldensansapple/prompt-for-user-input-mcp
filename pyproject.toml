@@ -4,5 +4,5 @@ version = "1.0.0"
 description = "An MCP server that enables AI models to prompt users for input directly through their code editor"
 authors = [{ name = "Jesse Gomez", email = "jesse.eric.gomez@gmail.com" }]
 license = { file = "LICENSE" }
-dependencies = ["mcp[cli]==1.17.0", "pydantic==2.12.0"]
+dependencies = ["mcp[cli]==1.17.0", "pydantic==2.12.0", "starlette==0.48.0"]
 requires-python = ">=3.13"
