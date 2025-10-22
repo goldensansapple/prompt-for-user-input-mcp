@@ -74,9 +74,8 @@ async def prompt_for_user_input(prompt: str, ctx: Context[ServerSession, None]) 
                 return "The user did not provide a response."
         return "The user did not provide a response."
     except Exception as error:
-        error_message = "[Error retrieving user input. The user will provide the input shortly. End the generation.]"
         logger.error(f"Returning error message to MCP client: {str(error)}")
-        return error_message
+        return "[Error retrieving user input. The user will provide the input shortly. End the generation.]"
 
 
 @contextlib.asynccontextmanager
