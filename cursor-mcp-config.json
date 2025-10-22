@@ -3,7 +3,7 @@
     "prompt-for-user-input-mcp": {
       "url": "http://127.0.0.1:4444/mcp",
       "headers": {
-        "Authorization": "Bearer ${env.PROMPT_FOR_USER_INPUT_MCP_AUTH_TOKEN}"
+        "Authorization": "Bearer ${env:PROMPT_FOR_USER_INPUT_MCP_AUTH_TOKEN}"
       }
     }
   }

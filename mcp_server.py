@@ -1,64 +1,56 @@
 import logging
 import os
+import contextlib
 from mcp.server.fastmcp import FastMCP, Context
 from mcp.server.session import ServerSession
 from pydantic import BaseModel, Field
+from starlette.applications import Starlette
 from starlette.middleware import Middleware
-from starlette.requests import Request
-from starlette.responses import JSONResponse
-from starlette.types import ASGIApp, Receive, Scope, Send
+from starlette.middleware.authentication import AuthenticationMiddleware
+from starlette.authentication import (
+    AuthenticationBackend,
+    AuthCredentials,
+    SimpleUser,
+)
+from starlette.routing import Mount
 
 logger = logging.getLogger(__name__)
+
+
+class NoAuthenticationTokenError(Exception):
+    """Exception raised when no authentication token is found."""
+
+    def __init__(self):
+        super().__init__(
+            "No PROMPT_FOR_USER_INPUT_MCP_AUTH_TOKEN environment variable found."
+        )
+
 
 # Generate or load authentication token
 AUTH_TOKEN = os.environ.get("PROMPT_FOR_USER_INPUT_MCP_AUTH_TOKEN")
 if not AUTH_TOKEN:
-    raise ValueError(
-        "No PROMPT_FOR_USER_INPUT_MCP_AUTH_TOKEN environment variable found."
-    )
+    raise NoAuthenticationTokenError()
 
 
-class AuthMiddleware:
+class BearerAuthBackend(AuthenticationBackend):
     """Middleware to validate authentication token."""
 
-    def __init__(self, app: ASGIApp):
-        self.app = app
-
-    async def __call__(self, scope: Scope, receive: Receive, send: Send):
-        # Construct request to access headers
-        request = Request(scope, receive=receive)
-
-        # Check for Bearer token in Authorization header
-        auth_header = request.headers.get("Authorization", "")
-
+    async def authenticate(self, conn):
+        if "Authorization" not in conn.headers:
+            return
+        auth_header = conn.headers["Authorization"]
         if not auth_header.startswith("Bearer "):
-            response = JSONResponse(
-                {"error": "Missing or invalid Authorization header"},
-                status_code=401,
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-            await response(scope, receive, send)
             return
-
-        token = auth_header[7:]  # Remove "Bearer " prefix
-
+        token = auth_header.split(" ")[1]
         if token != AUTH_TOKEN:
-            response = JSONResponse(
-                {"error": "Invalid authentication token"}, status_code=403
-            )
-            await response(scope, receive, send)
             return
+        return AuthCredentials(["authenticated"]), SimpleUser(
+            "prompt-for-user-input-mcp"
+        )
 
-        # Token is valid, continue
-        await self.app(scope, receive, send)
-
-
-auth_middleware = Middleware(AuthMiddleware)
 
 mcp = FastMCP(
     "prompt-for-user-input-mcp",
-    port=4444,
-    middleware=auth_middleware,
 )
 
 
@@ -83,5 +75,17 @@ async def prompt_for_user_input(prompt: str, ctx: Context[ServerSession, None]) 
         return error_message
 
 
-if __name__ == "__main__":
-    mcp.run(transport="streamable-http")
+@contextlib.asynccontextmanager
+async def lifespan(app: Starlette):
+    async with contextlib.AsyncExitStack() as stack:
+        await stack.enter_async_context(mcp.session_manager.run())
+        yield
+
+
+app = Starlette(
+    routes=[
+        Mount("/", app=mcp.streamable_http_app()),
+    ],
+    middleware=[Middleware(AuthenticationMiddleware, backend=BearerAuthBackend())],
+    lifespan=lifespan,
+)

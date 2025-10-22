@@ -8,18 +8,10 @@ A Model Context Protocol (MCP) server that enables AI models to prompt users for
 IMPORTANT: Do not finish responding until explicitly told to do so; instead, always use the MCP `prompt_for_user_input`. If you feel stuck, are experiencing issues, have a question, or have finished the work, always communicate with the user using this MCP. The prompts you give the user must be simple. It's fine if they contain a lot of information, but they must not be in Markdown since it will not render properly. The prompts should be written almost entirely in prose.
 ```
 
-## Command and Setup
+## Command
 
 Run the server:
 
 ```console
-uv run mcp_server.py
-```
-
-Add the following to your Cursor MCP configuration:
-
-```json
-{
-  "url": "http://127.0.0.1:4444/mcp"
-}
+uv run --env-file .env uvicorn mcp_server:app --port 4444
 ```
