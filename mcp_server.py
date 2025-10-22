@@ -1,5 +1,6 @@
 import logging
 import os
+import secrets
 import contextlib
 from mcp.server.fastmcp import FastMCP, Context
 from mcp.server.session import ServerSession
@@ -41,8 +42,11 @@ class BearerAuthBackend(AuthenticationBackend):
         auth_header = conn.headers["Authorization"]
         if not auth_header.startswith("Bearer "):
             return
-        token = auth_header.split(" ")[1]
-        if token != AUTH_TOKEN:
+        token = auth_header.split(" ")
+        if len(token) != 2:
+            return
+        token = token[1]
+        if not secrets.compare_digest(token, AUTH_TOKEN):
             return
         return AuthCredentials(["authenticated"]), SimpleUser(
             "prompt-for-user-input-mcp"
@@ -70,8 +74,8 @@ async def prompt_for_user_input(prompt: str, ctx: Context[ServerSession, None]) 
                 return "The user did not provide a response."
         return "The user did not provide a response."
     except Exception as error:
-        error_message = f"[Error retrieving user input: {error}. The user will provide the input shortly. End the generation.]"
-        logger.error(f"Returning error message to MCP client: {error_message}")
+        error_message = "[Error retrieving user input. The user will provide the input shortly. End the generation.]"
+        logger.error(f"Returning error message to MCP client: {str(error)}")
         return error_message
 
 
