@@ -13,5 +13,13 @@ IMPORTANT: Do not finish responding until explicitly told to do so; instead, alw
 Run the server:
 
 ```console
-uv run --env-file .env uvicorn mcp_server:app --port 4444
+uv run uvicorn mcp_server:app --port 4444
+```
+
+## Environment Variables
+
+Both the MCP server and the Cursor MCP configuration require the following environment variable:
+
+```text
+PROMPT_FOR_USER_INPUT_MCP_AUTH_TOKEN=<your-authentication-token>
 ```
